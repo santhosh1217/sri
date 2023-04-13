@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+	{% block content %}
+{% load static %}
+<head>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Attentance Page</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+
+	
+</head>
+<body>
+	<div>
+		{% include 'attendance_navigation.html' %}
+	</div>
+
+
+		<div id="top">
+			<br>
+
+			<div class="dep">
+				<lable >{{department}}</lable>
+		    </div>
+<br>
+			<div class="year">
+			<center>
+				<label  id="year">{{year}}(Attendance Sheet)</label>
+			</center>
+			</div>
+
+<br>	<form action="auto/" method="post">
+		{% csrf_token %}
+			<div class="bt0">
+			<button class="btn btn-outline-danger" id="btn" >Trail</button>
+			</div>
+			
+		</form>
+		<br>
+			
+	
+
+<br>	<form action="admin/" method="post">
+	{% csrf_token %}
+			<div class="bt">
+			<button class="btn btn-outline-danger" id="btn" >edit</button>
+			</div>
+<br>
+		</div>
+	
+	</form>
+	<br>
+	<form method="POST" id="data" action="send_attendance">
+		{%csrf_token%}
+	<table class="table  table-bordered table-hover">
+		<tr>
+			<th>S.No</th>
+			<th>RollNo</th>
+			<th>Name</th>
+			<th>FORENOON</th>
+			<th>AFTERNOON</th>
+		</tr>
+		{% for data in detial %}
+		<tr>
+			<td>{{data.id}}</td>
+			<td>{{data.reg}}</td>
+			<td>{{data.name}}</td>
+			
+			<td><input class="ck" type="checkbox"  name="{{data.reg}}"  
+			{% if data.fn %}
+				checked
+			{% endif %}>
+
+			</td>
+			<td><input class="ck" type="checkbox" name="{{data.name}}"
+			{% if data.an %}
+				checked
+			{% endif %}></td>
+		</tr>
+		
+
+
+	
+
+		{% endfor %} 
+<tr>
+		{% if msg1 and msg2 %}
+			<td colspan = 3></td>
+			
+
+		{% else %}
+		<td colspan = 3>
+			<div class="message">
+				<input id="msg" type="text" style="width: 100%;" name="whatsapp" placeholder="send message to absenties ">
+			</div>
+		</td>	
+
+		{% endif %}
+
+		
+		
+		
+		<td>
+			{% if msg1 %}
+  <style>
+
+    .my-button {
+      background-color: green;
+    }
+
+
+  </style>
+  {% endif %}
+  {% if msg2 %}
+  <style>
+.my1-button {
+      background-color: green;
+    }
+  </style>
+{% else %}
+  <style>
+    button {
+      background-color: red;
+    }
+  </style>
+{% endif %}
+			
+			<button onclick="ck()"  class="my-button" {% if msg1 %}
+			disabled
+		{% endif %}>
+		{% if msg1 %}
+		Submitted
+		{% else %}
+		submit  Attendance (FN)
+		{% endif %}
+		</button></td>
+		<td><button onclick="ck1()"  class="my1-button" {% if msg2 %}
+			disabled
+		{% endif %}>		
+		{% if msg2 %}
+		Submitted
+		{% else %}
+		submit  Attendance (AN)
+		{% endif %}
+
+		</button></td>
+	</tr>
+
+	</table>
+
+	
+
+</form>
+
+
+<script>
+	
+function ck()
+{
+
+	document.getElementById("data").action = "send_attendance/1";
+
+
+}
+function ck1()
+{
+	document.getElementById("data").action = "send_attendance/2";
+}
+
+
+
+
+</script>
+
+
+<div id="main">
+<center>
+	<br><br>
+	
+<br>
+
+
+<form action="emailsubmit" method="post" hidden>
+	{% csrf_token %}
+<div class="message">
+	<input id="msg" type="text" style="width: 200px;" name="whatsapp" placeholder="Type The Message">
+</div>
+	<div class="buttons" >
+		<button id="sendmsg" onclick="message()" class="btn btn-outline-success">Submit</button>
+	</div>
+</form>
+</center>
+
+
+		
+</body>
+</html>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+<script type="text/javascript">
+	function message()
+	{
+		// body...
+		document.getElementById("msg").style.opacity="90%"
+	}
+</script>
+
+<style type="text/css">
+	#top
+	{
+			
+		font-size: large;
+		color: purple;
+		background-color: #FDBD6B;
+		
+		
+	}
+
+	.dep
+	{
+		margin-left: 2%;	
+	}
+	.year
+	{
+		margin-top: -60px;
+	}
+	.bt
+	{
+		margin-top: -90px;
+		margin-left:85%;
+	}
+	.bt0
+	{
+		margin-top: -60px;
+		margin-left:75%;
+	}
+
+
+	
+
+
+
+	#submit
+	{
+		margin-top: -130px;
+		margin-left:70%;
+		border: 1px sold rgb(0, 255, 0);
+		visibility: hidden;
+	}
+
+	#msg
+	{
+		
+	
+		border: none;
+		border-bottom: 1px solid grey;
+	} 
+
+</style>
+{% endblock %}
